@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cravecrush/screens/signup_screen.dart'; // Import your sign-up page
 import 'package:cravecrush/screens/home_screen.dart'; // Import your home page
+import 'package:cravecrush/screens/forgot_password_screen.dart'; // Import your forgot password page
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
+  bool _isPasswordVisible = false; // Track password visibility
   String _errorMessage = '';
 
   Future<void> _signInWithEmailAndPassword(BuildContext context) async {
@@ -26,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       // Navigate to home page after successful sign-in
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } catch (e) {
       print('Failed to sign in with email and password: $e');
@@ -54,6 +55,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _navigateToForgotPasswordPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +73,6 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Image.asset(
             'assets/images/login.png',
-            // Replace 'background_image.jpg' with your image path
             fit: BoxFit.cover,
           ),
           SingleChildScrollView(
@@ -77,28 +84,22 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20),
-                  const Text(
+                  Text(
                     'Welcome Back!',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white, // Text color
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(),
-                      icon: Icon(Icons.email, color: Colors.white),
-                      // Icon color
-                      labelStyle: TextStyle(
-                          color: Colors.white), // Label text color
+                      icon: Icon(Icons.email),
                     ),
-                    style: const TextStyle(color: Colors.white),
-                    // Text input color
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
@@ -110,16 +111,24 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Password',
                       border: OutlineInputBorder(),
-                      icon: Icon(Icons.lock, color: Colors.white), // Icon color
-                      labelStyle: TextStyle(
-                          color: Colors.white), // Label text color
+                      icon: Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible ? Icons.visibility : Icons
+                              .visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                      ),
                     ),
-                    obscureText: true,
-                    style: const TextStyle(color: Colors.white),
-                    // Text input color
+                    obscureText: !_isPasswordVisible,
+                    // Toggle password visibility
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your password';
@@ -133,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
                         _errorMessage,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.red,
                           fontStyle: FontStyle.italic,
                         ),
@@ -153,6 +162,11 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(
                     onPressed: () => _navigateToSignUpPage(context),
                     child: const Text('Don\'t have an account? Sign Up'),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => _navigateToForgotPasswordPage(context),
+                    child: const Text('Forgot Password?'),
                   ),
                 ],
               ),
