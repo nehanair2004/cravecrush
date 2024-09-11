@@ -1,6 +1,8 @@
-# cravecrush
+# CraveCrush (Flutter Mobile Application)
 
-A new Flutter project.
+The app aims to monitor smoking habits, help users to quit
+Features: Smoke-free hours tracking, smoking habit assessment, money saved wallet, health progress tracking, and a motivational guide
+Dart and Flutter for development, Android Studio for IDE, and Firebase for backend and authentication
 
 ## Getting Started
 
